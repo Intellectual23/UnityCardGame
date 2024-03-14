@@ -49,4 +49,5 @@ public class CardGame : MonoBehaviour
     var layoutCards = _cards.Where(pair => pair.Key.LayoutId == layoutId).Select(pair => pair.Value).ToList();
     cardInstance.MoveToLayout(layoutId, layoutCards.Count + 1);
   }
+  public List<CardView> GetCardsInLayout(int layoutId) => _cards.Where(pair => pair.Key.LayoutId == layoutId).Select(pair => pair.Value).ToList();
 }

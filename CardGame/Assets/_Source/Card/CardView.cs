@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Card
 {
@@ -9,6 +10,11 @@ namespace Card
     public void Init(CardInstance cardInstance)
     {
       _cardInstance = cardInstance;
+    }
+
+    public CardInstance GetCardInstance()
+    {
+      return _cardInstance;
     }
   }
 }
