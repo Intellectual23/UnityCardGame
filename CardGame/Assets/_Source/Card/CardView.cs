@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Card
 {
-  public class CardView : MonoBehaviour
+  public class CardView : MonoBehaviour, IPointerClickHandler
   {
     private CardInstance _cardInstance;
     public Image _cardImage;
@@ -19,7 +20,7 @@ namespace Card
     public CardInstance CardInstance
     {
       get => _cardInstance;
-      private set => _cardInstance = value;
+      set => _cardInstance = value;
     }
 
     public void Rotate(bool up)
@@ -28,6 +29,16 @@ namespace Card
       Transform backImage = transform.GetChild(0);
       backImage.gameObject.SetActive(!up);
       _cardImage.gameObject.SetActive(up);
+    }
+
+    public void PlayCard()
+    {
+      CardInstance.MoveToLayout(2,CardGame.Instance.GetCardsInLayout(2).Count + 1);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+      PlayCard();
     }
   }
 }
