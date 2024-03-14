@@ -6,6 +6,7 @@ namespace Card
   {
     [field: SerializeField] public int LayoutId { get; private set; }
     [field: SerializeField] public Vector2 Offset { get; private set; }
+    [field: SerializeField] public bool FaceUp { get; private set; }
 
     void Update()
     {
@@ -14,10 +15,9 @@ namespace Card
       {
         Transform cardTransform = layoutCards[i].transform;
         cardTransform.localPosition = new Vector3(i * Offset.x, i* Offset.y, 0f);
-        cardTransform.SetSiblingIndex(layoutCards[i].GetCardInstance().CardPosition);
+        cardTransform.SetSiblingIndex(layoutCards[i].CardInstance.CardPosition);
+        layoutCards[i].Rotate(FaceUp);
       }
     }
-    
-    
   }
 }

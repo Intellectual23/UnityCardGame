@@ -15,5 +15,10 @@
       LayoutId = newLayoutId;
       CardPosition = newCardPosition;
     }
+    public CardAsset CardAsset
+    {
+      get => _cardAsset;
+      set => _cardAsset = value;
+    }
   }
 }
