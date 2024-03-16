@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Card;
+using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CardGame : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class CardGame : MonoBehaviour
   public List<CardAsset> _startCards = new();
   private Dictionary<CardInstance, CardView> _cards = new();
   public List<CardLayout> _layouts = new();
-  public int HandCapacity { get; }
+  [SerializeField] public int HandCapacity;
 
   private void Awake()
   {
@@ -29,20 +29,24 @@ public class CardGame : MonoBehaviour
     DontDestroyOnLoad(this);
   }
 
+  private void Start()
+  {
+    StartGame();
+  }
+
   private void StartGame()
   {
     for (int i = 0; i < _startCards.Count; ++i)
     {
       CreateCard(_startCards[i], 0);
     }
-    ShuffleLayout(0);
     StartTurn();
   }
 
   private void CreateCardView(CardInstance cardInstance)
   {
     GameObject cardObject = Instantiate(_cardPrefab);
-    CardView cardView = _cardPrefab.AddComponent<CardView>();
+    CardView cardView = cardObject.GetComponent<CardView>();
     cardView.Init(cardInstance);
     _cards.Add(cardInstance, cardView);
   }
@@ -51,10 +55,12 @@ public class CardGame : MonoBehaviour
   {
     CardInstance cardInstance = new CardInstance(cardAsset);
     CreateCardView(cardInstance);
-    // Moving card to Layout. Use LINQ to get position(starts from 1).
-    var layoutCards = _cards.Where(pair => pair.Key.LayoutId == layoutId).Select(pair => pair.Value).ToList();
+    // Moving card to Layout.
+    var layoutCards = GetCardsInLayout(layoutId);
     cardInstance.MoveToLayout(layoutId, layoutCards.Count + 1);
   }
+  
+  //Use LINQ to get position(starts from 1).
   public List<CardView> GetCardsInLayout(int layoutId) => _cards.Where(pair => pair.Key.LayoutId == layoutId).Select(pair => pair.Value).ToList();
 
   public void RecalculateLayout(int layoutId)
@@ -62,12 +68,13 @@ public class CardGame : MonoBehaviour
     List<CardView> cardsInLayout = GetCardsInLayout(layoutId);
     for (int i = 0; i < cardsInLayout.Count; i++)
     {
-      cardsInLayout[i].CardInstance.CardPosition = i;
+      cardsInLayout[i].CardInstance.CardPosition = i+1;
     }
   }
   
   public void StartTurn()
   {
+    ShuffleLayout(0);
     for (int i = 0; i < HandCapacity; ++i)
     {
       var deck = GetCardsInLayout(0);
@@ -76,21 +83,21 @@ public class CardGame : MonoBehaviour
         Debug.Log("- Deck is empty!");
         return;
       }
-      deck[i].CardInstance.MoveToLayout(1, deck.Count + 1);
+      deck[i].CardInstance.MoveToLayout(1, GetCardsInLayout(1).Count + 1);
     }
+    Instance.RecalculateLayout(0);
   }
   
   public void ShuffleLayout(int layoutId)
   {
-    List<CardView> cardsInLayout = GetCardsInLayout(layoutId);
-    for (int i = 0; i < cardsInLayout.Count; i++)
+    List<CardView> layoutCards = GetCardsInLayout(layoutId);
+    for (int i = 0; i < layoutCards.Count; ++i)
     {
-      int randomIndex = Random.Range(i, cardsInLayout.Count);
-      CardInstance tempCard = cardsInLayout[i].CardInstance;
-      cardsInLayout[i] = cardsInLayout[randomIndex];
-      cardsInLayout[randomIndex].CardInstance = tempCard;
-      cardsInLayout[i].CardInstance.CardPosition = i;
-      cardsInLayout[randomIndex].CardInstance.CardPosition = randomIndex;
+      int randomIndex = UnityEngine.Random.Range(0, layoutCards.Count);
+      var curCard = layoutCards[i];
+      var cardToSwap = layoutCards[randomIndex];
+      Debug.Log($"Changed {i}:{curCard.CardInstance.CardPosition} - {randomIndex}:{cardToSwap.CardInstance.CardPosition}");
+      (curCard.CardInstance.CardPosition, cardToSwap.CardInstance.CardPosition) = (cardToSwap.CardInstance.CardPosition, curCard.CardInstance.CardPosition);
     }
   }
 }

@@ -2,25 +2,18 @@
 {
   public class CardInstance
   {
-    private CardAsset _cardAsset;
+    public CardAsset CardAsset;
     public int LayoutId;
     public int CardPosition;
     public CardInstance(CardAsset cardAsset)
     {
-      _cardAsset = cardAsset;
+      CardAsset = cardAsset;
     }
 
     public void MoveToLayout(int newLayoutId, int newCardPosition)
     {
-      int oldLayout = LayoutId;
       LayoutId = newLayoutId;
       CardPosition = newCardPosition;
-      CardGame.Instance.RecalculateLayout(oldLayout);
-    }
-    public CardAsset CardAsset
-    {
-      get => _cardAsset;
-      set => _cardAsset = value;
     }
   }
 }
