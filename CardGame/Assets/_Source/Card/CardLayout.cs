@@ -13,10 +13,11 @@ namespace Card
       var layoutCards = CardGame.Instance.GetCardsInLayout(LayoutId);
       for (int i = 0; i < layoutCards.Count; ++i)
       {
-        Transform cardTransform = layoutCards[i].transform;
-        cardTransform.localPosition = new Vector3(i * Offset.x, i* Offset.y, 0f);
-        cardTransform.SetSiblingIndex(layoutCards[i].CardInstance.CardPosition);
-        layoutCards[i].Rotate(FaceUp);
+        CardView card = layoutCards[i];
+        RectTransform cardRectTransform = gameObject.GetComponent<RectTransform>();
+        card.transform.localPosition = cardRectTransform.position + new Vector3(i * Offset.x, i * Offset.y, 0f);
+        card.transform.SetSiblingIndex(layoutCards[i].CardInstance.CardPosition);
+        card.Rotate(FaceUp);
       }
     }
   }
