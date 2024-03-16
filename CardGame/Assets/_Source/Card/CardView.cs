@@ -4,17 +4,16 @@ using UnityEngine.UI;
 
 namespace Card
 {
-  public class CardView : MonoBehaviour, IPointerClickHandler
+  public class CardView : MonoBehaviour
   {
     private CardInstance _cardInstance;
-    public Image _cardImage;
 
     public void Init(CardInstance cardInstance)
     {
       _cardInstance = cardInstance;
-      _cardImage.sprite = cardInstance.CardAsset.Image;
-      _cardImage.color = cardInstance.CardAsset.Color;
-      gameObject.name = cardInstance.CardAsset.Name;
+      Transform image = transform.GetChild(0).transform.GetChild(0);
+      if (image == null) return;
+      image.GetComponent<SpriteRenderer>().sprite = CardInstance.CardAsset.Image;
     }
 
     public CardInstance CardInstance
@@ -25,19 +24,21 @@ namespace Card
 
     public void Rotate(bool up)
     {
-      // Assuming there is a back image as a child object named "BackImage"
-      Transform backImage = transform.GetChild(0);
-      backImage.gameObject.SetActive(!up);
-      _cardImage.gameObject.SetActive(up);
+      Transform frontSide = transform.GetChild(0);
+      Transform backSide = transform.GetChild(1);
+      frontSide.gameObject.SetActive(up);
+      backSide.gameObject.SetActive(!up);
     }
 
     public void PlayCard()
     {
-      CardInstance.MoveToLayout(2,CardGame.Instance.GetCardsInLayout(2).Count + 1);
+      CardInstance.MoveToLayout(2, CardGame.Instance.GetCardsInLayout(2).Count + 1);
+      CardGame.Instance.RecalculateLayout(1);
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    private void OnMouseDown()
     {
+      Debug.Log("Clicked on " + gameObject.name);
       PlayCard();
     }
   }
