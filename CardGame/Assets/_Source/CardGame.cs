@@ -85,9 +85,8 @@ public class CardGame : MonoBehaviour
       }
 
       deck[0].CardInstance.MoveToLayout(1, GetCardsInLayout(1).Count + 1);
+      RecalculateLayout(0);
     }
-
-    RecalculateLayout(0);
   }
 
   private void ShuffleLayout(int layoutId)
