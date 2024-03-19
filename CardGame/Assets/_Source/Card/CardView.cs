@@ -32,8 +32,17 @@ namespace Card
 
     public void PlayCard()
     {
-      CardInstance.MoveToLayout(2, CardGame.Instance.GetCardsInLayout(2).Count + 1);
-      CardGame.Instance.RecalculateLayout(1);
+      if (CardInstance.LayoutId == 1)
+      {
+        CardInstance.MoveToLayout(2, CardGame.Instance.GetCardsInLayout(2).Count + 1);
+        CardGame.Instance.RecalculateLayout(1);
+      }
+      else if (CardInstance.LayoutId == 2)
+      {
+        CardInstance.MoveToLayout(3, CardGame.Instance.GetCardsInLayout(3).Count + 1);
+      }
+
+      CardGame.Instance.RecalculateLayout(2);
     }
 
     private void OnMouseDown()

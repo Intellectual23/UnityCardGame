@@ -5,6 +5,7 @@
     public CardAsset CardAsset;
     public int LayoutId;
     public int CardPosition;
+
     public CardInstance(CardAsset cardAsset)
     {
       CardAsset = cardAsset;
